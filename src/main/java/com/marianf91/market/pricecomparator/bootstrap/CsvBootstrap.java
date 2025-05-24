@@ -80,9 +80,9 @@ public class CsvBootstrap implements CommandLineRunner {
                                 return productRepo.findByNameAndBrandAndQuantityAndUnit(
                                         p.getName(), p.getBrand(), p.getQuantity(), p.getUnit()
                                 ).orElseThrow(() ->
-                                        new EntityNotFoundException("Produs cu atributele " +
+                                        new EntityNotFoundException("Product with attributes " +
                                                 p.getName() + "/" + p.getBrand() + "/" + p.getQuantity() + "/" + p.getUnit() +
-                                                " nu se găsește și nu poate fi creat")
+                                                " cannot be found or created.")
                                 );
                             }
                         });
