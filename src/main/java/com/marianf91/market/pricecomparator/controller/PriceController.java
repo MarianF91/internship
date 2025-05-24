@@ -17,7 +17,7 @@ public class PriceController {
     public PriceController(PriceService service) {
         this.service = service;
     }
-//
+
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public List<PriceSnapshot> getAll(
             @RequestParam(required = false) String storeName,
