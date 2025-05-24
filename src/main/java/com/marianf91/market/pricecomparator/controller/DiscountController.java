@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDate;
 import java.util.List;
 
+import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
+
 @RestController
 @RequestMapping("/api/discounts")
 public class DiscountController {
@@ -23,16 +25,18 @@ public class DiscountController {
     public List<Discount> getAll(
             @RequestParam(required = false) String storeName,
             @RequestParam(required = false) String productId,
-            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fromDate,
-            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate toDate
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate from,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate to
     ) {
-        if (storeName == null && productId == null && fromDate == null && toDate == null) {
+        // if *all* filters are null, delegate to the no-arg service method
+        if (storeName == null && productId == null && from == null && to == null) {
             return service.getAllDiscounts();
         }
-        return service.getAllDiscounts(storeName, productId, fromDate, toDate);
+        // otherwise use the filtering overload
+        return service.getAllDiscounts(storeName, productId, from, to);
     }
 
-    @GetMapping(value = "/best", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/best", produces = APPLICATION_JSON_VALUE)
     public List<BestDiscountDTO> best() {
         return service.getBestDiscounts();
     }

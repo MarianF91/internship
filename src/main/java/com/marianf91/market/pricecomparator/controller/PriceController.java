@@ -24,6 +24,7 @@ public class PriceController {
             @RequestParam(required = false) String productId,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date
     ) {
+
         if (storeName == null && productId == null && date == null) {
             return service.getAllPrices();
         }

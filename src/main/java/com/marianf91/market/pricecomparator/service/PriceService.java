@@ -15,21 +15,27 @@ public class PriceService {
         this.repo = repo;
     }
 
-    /**
-     * No filters ⇒ return everything
-     */
+    /** All prices */
     public List<PriceSnapshot> getAllPrices() {
         return repo.findAll();
     }
 
     /**
-     * Optional filters ⇒ delegate to our single JPQL method
+     * Filters prices using optional parameters.
+     * If all parameters are null, returns repo.findAll().
      */
     public List<PriceSnapshot> getAllPrices(
             String storeName,
             String productId,
             LocalDate date
     ) {
-        return repo.findByFilters(storeName, productId, date);
+        if (storeName == null && productId == null && date == null) {
+            return getAllPrices();
+        }
+        return repo.findByFilters(
+                storeName,
+                productId,
+                date
+        );
     }
 }
