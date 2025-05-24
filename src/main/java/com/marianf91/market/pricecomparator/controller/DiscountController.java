@@ -18,7 +18,7 @@ public class DiscountController {
     public DiscountController(DiscountService service) {
         this.service = service;
     }
-
+//
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public List<Discount> getAll(
             @RequestParam(required = false) String storeName,
