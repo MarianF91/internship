@@ -4,6 +4,8 @@ import com.marianf91.market.pricecomparator.dto.DiscountCreateDto;
 import com.marianf91.market.pricecomparator.dto.DiscountResponseDto;
 import com.marianf91.market.pricecomparator.service.BestDiscountDTO;
 import com.marianf91.market.pricecomparator.service.DiscountService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -15,6 +17,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping(path = "/api/discounts", produces = MediaType.APPLICATION_JSON_VALUE)
+@Tag(name = "Discounts", description = "Endpoints for managing product discounts")
 public class DiscountController {
 
     private final DiscountService service;
@@ -22,7 +25,10 @@ public class DiscountController {
     public DiscountController(DiscountService service) {
         this.service = service;
     }
-
+    @Operation(
+            summary = "Get all discounts, with optional filters",
+            description = "Retrieve all discounts. You can filter by store, product, from/to date."
+    )
     @GetMapping
     public List<DiscountResponseDto> getAll(
             @RequestParam(name = "store",    required = false) String storeName,
@@ -47,12 +53,18 @@ public class DiscountController {
                 ))
                 .toList();
     }
-
+    @Operation(
+            summary = "Get the best current discounts",
+            description = "Returns top products with the highest current discounts across all stores."
+    )
     @GetMapping(path = "/best")
     public List<BestDiscountDTO> best() {
         return service.getBestDiscounts();
     }
-
+    @Operation(
+            summary = "Create a new discount",
+            description = "Add a new discount for a product and store."
+    )
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     public DiscountResponseDto create(@Valid @RequestBody DiscountCreateDto dto) {
@@ -74,6 +86,10 @@ public class DiscountController {
      *  - GET /api/discounts/new
      *  - GET /api/discounts/new?since=2025-05-23
      */
+    @Operation(
+            summary = "Get discounts created since a specific date (new discounts)",
+            description = "Returns all discounts created since the provided date. If not specified, defaults to the last 24 hours."
+    )
     @GetMapping(path = "/new")
     public List<DiscountResponseDto> getNew(
             @RequestParam(name = "since", required = false)
