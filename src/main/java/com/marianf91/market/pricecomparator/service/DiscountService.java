@@ -1,11 +1,10 @@
 package com.marianf91.market.pricecomparator.service;
 
-import com.marianf91.market.pricecomparator.dto.DiscountDto;
+import com.marianf91.market.pricecomparator.dto.DiscountCreateDto;
+import com.marianf91.market.pricecomparator.dto.DiscountResponseDto;
 import com.marianf91.market.pricecomparator.model.Discount;
-import com.marianf91.market.pricecomparator.service.BestDiscountDTO;
 import com.marianf91.market.pricecomparator.repository.DiscountRepository;
 import org.springframework.stereotype.Service;
-
 import java.time.LocalDate;
 import java.util.List;
 
@@ -20,52 +19,33 @@ public class DiscountService {
         this.lookup = lookup;
     }
 
-    /** All discounts */
     public List<Discount> getAllDiscounts() {
         return repo.findAll();
     }
 
-    /**
-     * Filters discounts using optional parameters.
-     * If all parameters are null, returns repo.findAll().
-     */
-    public List<Discount> getAllDiscounts(
-            String storeName,
-            String productId,
-            LocalDate fromDate,
-            LocalDate toDate
-    ) {
+    public List<Discount> getAllDiscounts(String storeName,
+                                          String productId,
+                                          LocalDate fromDate,
+                                          LocalDate toDate) {
         if (storeName == null && productId == null && fromDate == null && toDate == null) {
             return getAllDiscounts();
         }
-        return repo.findByFilters(
-                storeName,
-                productId,
-                fromDate,
-                toDate
-        );
+        return repo.findByFilters(storeName, productId, fromDate, toDate);
     }
 
-    /** Creates a new discount from DTO */
-    public Discount createDiscount(DiscountDto dto) {
-        var store    = lookup.resolveStore(dto.storeName());
-        var product  = lookup.resolveProduct(dto.productId());
-
-        var discount = Discount.builder()
+    public Discount createDiscount(DiscountCreateDto dto) {
+        var store   = lookup.resolveStore(dto.storeName());
+        var product = lookup.resolveProduct(dto.productId());
+        var ent     = Discount.builder()
                 .store(store)
                 .product(product)
                 .fromDate(dto.fromDate())
                 .toDate(dto.toDate())
                 .percentage(dto.percentage())
                 .build();
-
-        return repo.save(discount);
+        return repo.save(ent);
     }
 
-    /**
-     * Returns the best discount today, per product.
-     * Returns a DTO with the ID and max percentage.
-     */
     public List<BestDiscountDTO> getBestDiscounts() {
         LocalDate today = LocalDate.now();
         return repo.findBestCurrentDiscounts(today).stream()
@@ -78,6 +58,25 @@ public class DiscountService {
                             pct
                     );
                 })
+                .toList();
+    }
+
+    public List<Discount> getNewDiscounts(LocalDate since) {
+        return repo.findByFromDateAfter(since);
+    }
+
+    public List<DiscountResponseDto> getNewDiscountsLast24h() {
+        LocalDate since = LocalDate.now().minusDays(1);
+        var discounts = repo.findByFromDateAfter(since);
+        return discounts.stream()
+                .map(d -> new DiscountResponseDto(
+                        d.getProduct().getId(),
+                        d.getProduct().getName(),
+                        d.getStore().getName(),
+                        d.getFromDate(),
+                        d.getToDate(),
+                        d.getPercentage()
+                ))
                 .toList();
     }
 }

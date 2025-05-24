@@ -10,6 +10,8 @@ import java.util.List;
 
 public interface DiscountRepository extends JpaRepository<Discount, Long> {
 
+    List<Discount> findByFromDateAfter(LocalDate since);
+
     @Query("""
        SELECT d.product AS product,
               MAX(d.percentage) AS maxPct

@@ -13,21 +13,17 @@ public class EntityLookupService {
 
     public EntityLookupService(StoreRepository storeRepo,
                                ProductRepository productRepo) {
-        this.storeRepo = storeRepo;
+        this.storeRepo   = storeRepo;
         this.productRepo = productRepo;
     }
 
     public Store resolveStore(String storeName) {
         return storeRepo.findByNameIgnoreCase(storeName)
-                .orElseThrow(() ->
-                        new IllegalArgumentException("Store not found: " + storeName)
-                );
+                .orElseThrow(() -> new IllegalArgumentException("Store not found: " + storeName));
     }
 
     public Product resolveProduct(String productId) {
         return productRepo.findById(productId)
-                .orElseThrow(() ->
-                        new IllegalArgumentException("Product not found: " + productId)
-                );
+                .orElseThrow(() -> new IllegalArgumentException("Product not found: " + productId));
     }
 }

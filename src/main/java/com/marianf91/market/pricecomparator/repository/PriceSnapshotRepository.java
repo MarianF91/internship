@@ -1,6 +1,7 @@
 package com.marianf91.market.pricecomparator.repository;
 
 import com.marianf91.market.pricecomparator.model.PriceSnapshot;
+import com.marianf91.market.pricecomparator.model.Product;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -27,5 +28,11 @@ public interface PriceSnapshotRepository extends JpaRepository<PriceSnapshot, Lo
             @Param("storeName") String storeName,
             @Param("productId")  String productId,
             @Param("date")       LocalDate date
+    );
+
+    List<PriceSnapshot> findByProductAndDateBetween(
+            Product product,
+            LocalDate start,
+            LocalDate end
     );
 }
