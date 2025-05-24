@@ -25,6 +25,12 @@ public class DiscountCsvRow {
     private int percentage;
 
     public Discount toEntity(Store store, Product product) {
-        return new Discount(null, product, store, fromDate, toDate, percentage);
+        return Discount.builder()
+                .product(product)
+                .store(store)
+                .fromDate(fromDate)
+                .toDate(toDate)
+                .percentage(percentage)
+                .build();
     }
 }

@@ -24,12 +24,16 @@ public class PriceSnapshot {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "product_id", nullable = false)
     private Product product;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "store_id", nullable = false)
     private Store store;
 
+    @Column(name = "date", nullable = false)
     private LocalDate date;
+
     private BigDecimal price;
     private String currency;
 }

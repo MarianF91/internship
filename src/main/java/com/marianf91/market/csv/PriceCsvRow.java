@@ -29,10 +29,23 @@ public class PriceCsvRow {
     private String currency;
 
     public Product toProduct() {
-        return new Product(productId, productName, category, brand, quantity, unit);
+        return Product.builder()
+                .id(productId)
+                .name(productName)
+                .category(category)
+                .brand(brand)
+                .quantity(quantity)
+                .unit(unit)
+                .build();
     }
 
     public PriceSnapshot toSnapshot(Store store, LocalDate date, Product product) {
-        return new PriceSnapshot(null,   product, store, date,  price,  currency);
+        return PriceSnapshot.builder()
+                .product(product)
+                .store(store)
+                .date(date)
+                .price(price)
+                .currency(currency)
+                .build();
     }
 }

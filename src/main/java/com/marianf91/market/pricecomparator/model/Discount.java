@@ -23,15 +23,17 @@ public class Discount {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "product_id", nullable = false)
     private Product product;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "store_id", nullable = false)
     private Store store;
 
-    @Column(name = "from_date")
+    @Column(name = "from_date", nullable = false)
     private LocalDate fromDate;
 
-    @Column(name = "to_date")
+    @Column(name = "to_date", nullable = false)
     private LocalDate toDate;
 
     private Integer percentage;
